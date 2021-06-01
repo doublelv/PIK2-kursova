@@ -81,7 +81,7 @@ void menu2()
   drug *list = NULL;
   int choice2 = -1, drug_number, new_price;
   double drug_price;
-  char *drug_name , *drug_crdate;
+  char drug_name[30] , drug_crdate[20];
   char *menu2_string = "What do you want to do:\n"
                 "1-Load the database\n"
                 "2-Create a new entry\n"
@@ -101,7 +101,14 @@ void menu2()
         printf("Okay bye!\n");
         break;
       case 1:
-        list = read_data();
+        if(list == NULL)
+        {
+          list = read_data();
+        }
+        else
+        {
+          list->next = read_data();
+        }
         break;
       case 2:
         //New entry
@@ -110,7 +117,7 @@ void menu2()
         printf("Enter the drugs's name: ");
         scanf("%s", &drug_name);
         printf("Enter the drugs's price: ");
-        scanf("%f", &drug_price);
+        scanf("%lf", &drug_price);
         printf("Enter the drugs's creation date (dd/mm/yyyy): ");
         scanf("%s", &drug_crdate);
         if(list == NULL)
@@ -139,7 +146,7 @@ void menu2()
         printf("Enter the drugs's name: ");
         scanf("%s", &drug_name);
         printf("Enter the new_price: ");
-        scanf("%f", &new_price);
+        scanf("%lf", &new_price);
         change_price(list, drug_name, new_price);
         break;
       case 6:
@@ -340,7 +347,7 @@ drug *delete_drug_by_number(drug *head, int number)                             
 
 void print_drug(drug *drug)                                                               // prints the specific drug
 {
-  printf("Number %d with name %s and price %.2f was created on %s\n", drug->data.nomenclature_number, drug->data.name, drug->data.price, drug->data.creation_date);
+  printf("Number %d with name %s and price %.2lf was created on %s\n", drug->data.nomenclature_number, drug->data.name, drug->data.price, drug->data.creation_date);
 }
 
 void print_drug_from_list(drug* head, int number)                                         // prints the drug with a specific number from a list
@@ -382,12 +389,12 @@ void print_list(drug *head)                                                     
     }
 }
 
-void change_price(drug *head, char *drug_name, double price)                              // changes the price of the drug with the specified name
+void change_price(drug *head, char *drug_name, double new_price)                              // changes the price of the drug with the specified name
 {
   drug *tmp = head;
   int found = 0;
   int compare = 1;
-  while(tmp!= NULL && found == 0)
+  while(tmp!= NULL)
   {
     compare = strcmp(tmp->data.name, drug_name);
     if(compare == 0)
@@ -400,7 +407,7 @@ void change_price(drug *head, char *drug_name, double price)                    
 
   if(found == 1)
   {
-    tmp->data.price = price;
+    tmp->data.price = new_price;
   }
   else
   {
