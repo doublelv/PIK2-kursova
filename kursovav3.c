@@ -45,12 +45,12 @@ int main()
 
 void menu()
 {
-  int case_number = -1;
-  while(case_number != 0)
+  int choice = -1;
+  while(choice != 0)
   {
     printf("Enter a test case(1-5/0-exit): ");
-    scanf("%d", &case_number);
-    switch (case_number) {
+    scanf("%d", &choice);
+    switch (choice) {
       case 0:
         break;
       case 1:
@@ -77,60 +77,72 @@ void menu()
 
 void test_case_1()                                                                        // test case for create_drug(), print_list(), delete_drug_by_number().
 {
+  printf("\n");
+  printf("-Testing create_drug(), print_list(), delete_drug_by_number().\n");
   drug *list_lekarstva = create_drug(10, "ala", 4.99, "01/01/2021");
   list_lekarstva->next = create_drug(20, "bala", 10, "02/01/2021");
   list_lekarstva->next->next = create_drug(30, "baldsdasa", 20, "03/01/2021");
+  printf("-Should print 3 elements:\n");
   print_list(list_lekarstva);
   delete_drug_by_number(list_lekarstva, 20);
+  printf("-Second element deleted, should print the first and last:\n");
   print_list(list_lekarstva);
   delete_list(list_lekarstva);
+  printf("\n");
 }
 
 void test_case_2()                                                                        // test case for push_to_head() and push_to_tail()
 {
+  printf("\n");
   printf("-Testing push_to_head() and push_to_tail().\n");
   drug *list_lekarstva = create_drug(20, "evtino", 4.99, "01/01/2021");
   list_lekarstva = push_to_head(list_lekarstva, 10, "sredno", 10, "02/01/2021");
   list_lekarstva = push_to_tail(list_lekarstva, 30, "skupo", 20, "03/01/2021");
+  printf("-Should print 3 elements:\n");
   print_list(list_lekarstva);
   delete_list(list_lekarstva);
+  printf("\n");
 }
 
 void test_case_3()                                                                        // test case for change_price()
 {
-
+  printf("\n");
   printf("-Testing change_price().\n");
   drug *list_lekarstva = create_drug(10, "ala", 4.99, "01/01/2021");
-  list_lekarstva->next = create_drug(20, "bala", 10, "02/01/2021");
-  list_lekarstva->next->next = create_drug(30, "baldsdasa", 20, "03/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 20, "bala", 10, "02/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 30, "baldsdasa", 20, "03/01/2021");
+  printf("-Original elements:\n");
   print_list(list_lekarstva);
-  printf("-Now time to change the prices.\n");
   change_price(list_lekarstva, "ala", 1.9);
   change_price(list_lekarstva, "bala", 1);
   change_price(list_lekarstva, "baldsdasa", 3.0);
   change_price(list_lekarstva, "this", 3.0);
+  printf("-Elements should have different prices.\n");
   print_list(list_lekarstva);
   delete_list(list_lekarstva);
+  printf("\n");
 }
 
 void test_case_4()                                                                        // test case for print_drug_from_list()
 {
-  printf("-Testing print_drug_from_list().\n-Should print number 30.\n");
+  printf("\n");
+  printf("-Testing print_drug_from_list().\n-Should print ONLY number 30:\n");
   drug *list_lekarstva = create_drug(10, "ala", 4.99, "01/01/2021");
-  list_lekarstva->next = create_drug(20, "bala", 10, "02/01/2021");
-  list_lekarstva->next->next = create_drug(30, "baldsdasa", 20, "03/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 20, "bala", 10, "02/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 30, "baldsdasa", 20, "03/01/2021");
   print_drug_from_list(list_lekarstva, 30);
   delete_list(list_lekarstva);
+  printf("\n");
 }
 
 void test_case_5()                                                                        // test case for save_data() and read_data()
 {
-  printf("-Testing save_data().\n");
-  char *filename = "data.bin";
+  printf("\n");
+  printf("-Testing save_data() and read_data()\n-Should print elements from 10 to 40, read from the read_data() function:\n");
   drug *list_lekarstva = create_drug(10, "ala", 4.99, "01/01/2021");
-  list_lekarstva->next = create_drug(20, "bala", 10, "02/01/2021");
-  list_lekarstva->next->next = create_drug(30, "baldsdasa", 20, "03/01/2021");
-  list_lekarstva->next->next->next = create_drug(40, "bal", 100, "04/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 20, "bala", 10, "02/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 30, "baldsdasa", 20, "03/01/2021");
+  list_lekarstva = push_to_tail(list_lekarstva, 40, "bal", 100, "04/01/2021");
 
   save_data(list_lekarstva);
   delete_list(list_lekarstva);
@@ -138,6 +150,7 @@ void test_case_5()                                                              
   drug *procheten_list = read_data();
   print_list(procheten_list);
   delete_list(procheten_list);
+  printf("\n");
 }
 
 drug_data create_drug_data(int num, char *name, double price, char *cr_date)              // creates data and returns it to create_drug
@@ -162,8 +175,6 @@ drug *push_to_head(drug *head, int nomenclature, char* name, double price, char*
 {
   drug *new_head = create_drug(nomenclature, name, price, cr_date);
   new_head->next = head;
-  printf("Added to head: ");
-  print_drug(new_head);
   return new_head;
 }
 
@@ -175,8 +186,6 @@ drug *push_to_tail(drug *head, int nomenclature, char* name, double price, char*
     tmp = tmp->next;
   }
   tmp->next = create_drug(nomenclature, name, price, cr_date);
-  printf("Added to tail: ");
-  print_drug(tmp->next);
   return head;
 }
 
