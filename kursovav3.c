@@ -7,7 +7,7 @@ typedef struct drug_data
   int nomenclature_number;
   char name[30];
   double price;
-  char creation_date[20];
+  char creation_date[11];
 } drug_data;
 
 typedef struct drug
@@ -16,7 +16,11 @@ typedef struct drug
   struct drug *next;
 }drug;
 
-void menu();
+void menu1();
+void menu2();
+void view_database();
+
+void test_menu();
 void test_case_1();
 void test_case_2();
 void test_case_3();
@@ -39,11 +43,129 @@ drug *read_data();
 
 int main()
 {
-  menu();
+  menu1();
   return 0;
 }
 
-void menu()
+void menu1()
+{
+  int choice1 = -1;
+  char *menu1_string = "What do you want to do:\n"
+                "1-View the database\n"
+                "2-Work with the database\n"
+                "0-Exit: ";
+  while(choice1 != 0)
+  {
+    printf("%s", menu1_string);
+    scanf("%d", &choice1);
+    switch (choice1)
+    {
+      case 0:
+        break;
+      case 1:
+        //reading from database
+        view_database();
+        break;
+      case 2:
+        menu2();
+        break;
+      default:
+        printf("Invalid choice!\n");
+        break;
+    }
+  }
+}
+
+void menu2()
+{
+  drug *list = NULL;
+  int choice2 = -1, drug_number, new_price;
+  double drug_price;
+  char *drug_name , *drug_crdate;
+  char *menu2_string = "What do you want to do:\n"
+                "1-Load the database\n"
+                "2-Create a new entry\n"
+                "3-Print a drug with a specific number\n"
+                "4-Delete a drug with a specific number\n"
+                "5-Change the price of a drug with a specific name\n"
+                "6-Print current list\n"
+                "7-Save\n"
+                "0-Back: ";
+
+  while(choice2 != 0)
+  {
+    printf("%s", menu2_string);
+    scanf("%d", &choice2);
+    switch (choice2) {
+      case 0:
+        printf("Okay bye!\n");
+        break;
+      case 1:
+        list = read_data();
+        break;
+      case 2:
+        //New entry
+        printf("Enter the drugs's number: ");
+        scanf("%d", &drug_number);
+        printf("Enter the drugs's name: ");
+        scanf("%s", &drug_name);
+        printf("Enter the drugs's price: ");
+        scanf("%f", &drug_price);
+        printf("Enter the drugs's creation date (dd/mm/yyyy): ");
+        scanf("%s", &drug_crdate);
+        if(list == NULL)
+        {
+          list = create_drug(drug_number, drug_name, drug_price, drug_crdate);
+        }
+        else
+        {
+          list = push_to_tail(list, drug_number, drug_name, drug_price, drug_crdate);
+        }
+        break;
+      case 3:
+        // Print  a drug with a specific number
+        printf("Enter the drugs's number: ");
+        scanf("%d", &drug_number);
+        print_drug_from_list(list, drug_number);
+        break;
+      case 4:
+        // Delete a drug with a specific number
+        printf("Enter the drugs's number: ");
+        scanf("%d", &drug_number);
+        list = delete_drug_by_number(list, drug_number);
+        break;
+      case 5:
+        // Change the price of a drug with a specific name
+        printf("Enter the drugs's name: ");
+        scanf("%s", &drug_name);
+        printf("Enter the new_price: ");
+        scanf("%f", &new_price);
+        change_price(list, drug_name, new_price);
+        break;
+      case 6:
+        // Print current list
+        print_list(list);
+        break;
+      case 7:
+        //Save
+        save_data(list);
+        break;
+      default:
+        printf("Invalid choice!\n");
+        break;
+    }
+  }
+  delete_list(list);
+}
+
+void view_database()
+{
+  drug *list = read_data();
+  print_list(list);
+  delete_list(list);
+}
+
+void test_menu()
 {
   int choice = -1;
   while(choice != 0)
@@ -250,7 +372,6 @@ void print_list(drug *head)                                                     
     if(head == NULL)
     {
       printf("Empty list\n");
-      return;
     }
 
     tmp = head;
@@ -266,7 +387,7 @@ void change_price(drug *head, char *drug_name, double price)                    
   drug *tmp = head;
   int found = 0;
   int compare = 1;
-  while(tmp!= NULL)
+  while(tmp!= NULL && found == 0)
   {
     compare = strcmp(tmp->data.name, drug_name);
     if(compare == 0)
