@@ -39,7 +39,7 @@ drug *read_data();
 
 int main()
 {
-  test_case_5();
+  menu();
   return 0;
 }
 
